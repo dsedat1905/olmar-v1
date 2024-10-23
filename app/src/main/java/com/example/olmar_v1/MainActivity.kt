@@ -1,47 +1,41 @@
 package com.example.olmar_v1
 
 import android.os.Bundle
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.viewinterop.AndroidView
 import com.example.olmar_v1.ui.theme.Olmarv1Theme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             Olmarv1Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                // WebView bileşenini oluştur
+                WebViewScreen()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun WebViewScreen(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Olmarv1Theme {
-        Greeting("Android")
-    }
+    AndroidView(
+        factory = {
+            WebView(context).apply {
+                settings.javaScriptEnabled = true // JavaScript'i etkinleştir
+                webViewClient = WebViewClient() // Linklerin WebView içinde açılmasını sağlar
+                loadUrl("https://olmargida.com.tr") // Web adresini burada belirtiyoruz
+            }
+        },
+        modifier = modifier.fillMaxSize()
+    )
 }
